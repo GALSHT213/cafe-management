@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import Home from './components/home/Home';
 import Menu from './components/menu/Menu'
 import Navigation from './components/layout/Navigation';
+import Login from './components/authentication/Login';
 
 const Container = styled('div')(
   () => ({
@@ -35,6 +36,7 @@ export default function App() {
               <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/menu' element={<Menu />} />
+                <Route path='/login' element={<Login />} />
               </Routes>
             </ContainerContent>
           </Container>
