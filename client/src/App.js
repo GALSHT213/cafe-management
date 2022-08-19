@@ -5,6 +5,9 @@ import Home from './components/home/Home';
 import Menu from './components/menu/Menu'
 import Navigation from './components/layout/Navigation';
 import Login from './components/authentication/Login';
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import { AuthContext } from './contexts/AuthContext';
+import LoginGuard  from './guards/LoginGuard';
 
 const Container = styled('div')(
   () => ({
@@ -27,21 +30,31 @@ const ContainerContent = styled('div')(
 );
 
 export default function App() {
+
+  const [auth, setAuth] = useLocalStorage('auth', {});
+  const userLogin = (authData) => {
+    setAuth(authData);
+  };
+
   return (
     <>
-      <BrowserRouter>
-        <Navigation>
-          <Container>
-            <ContainerContent>
-              <Routes>
-                <Route path='/' element={<Home />} />
-                <Route path='/menu' element={<Menu />} />
-                <Route path='/login' element={<Login />} />
-              </Routes>
-            </ContainerContent>
-          </Container>
-        </Navigation>
-      </BrowserRouter>
+      <AuthContext.Provider value={{ user: auth, userLogin }}>
+        <BrowserRouter>
+          <Navigation>
+            <Container>
+              <ContainerContent>
+                <Routes>
+                  <Route element={<LoginGuard />}>
+                    <Route path='/' element={<Home />} />
+                    <Route path='/menu' element={<Menu />} />
+                  </Route>
+                  <Route path='/login' element={<Login />} />
+                </Routes>
+              </ContainerContent>
+            </Container>
+          </Navigation>
+        </BrowserRouter>
+      </AuthContext.Provider>
     </>
   );
 }
