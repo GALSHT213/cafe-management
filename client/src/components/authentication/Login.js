@@ -1,25 +1,19 @@
 import React, { useEffect } from 'react'
 import { Container } from '@mui/system';
 import { Typography } from '@mui/material';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
 import * as authService from "../../services/authService";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-
-// const loginUrl = 'http://localhost:8080/auth/realms/cafe-management/protocol/openid-connect/auth?client_id=cafe-management-server&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fapi%2Fauth%2Fcallback&response_type=code'
+import { useContext, useState } from "react";
 
 export default function Login() {
   const { userLogin } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [usernameValidation, setUsernameValidation] = useState(null);
+  const [passwordValidation, setPasswordValidation] = useState(null);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -38,6 +32,33 @@ export default function Login() {
       });
   };
 
+  const validateUsername = (event) => {
+    
+    const value = event.target.value;
+  
+    if (!value) {
+        setUsernameValidation({
+          error: 'Username cannot be empty'
+        })
+    } else {
+      setUsernameValidation(null);
+    }
+  }
+
+  const validatePassword = (event) => {
+    
+    const value = event.target.value;
+  
+    if (!value) {
+        setPasswordValidation({
+          error: 'Password cannot be empty'
+        })
+    } else {
+      setPasswordValidation(null);
+    }
+  }
+
+
   return (
     <Container component='section' sx={{
       backgroundColor: 'white',
@@ -55,7 +76,11 @@ export default function Login() {
           name="username"
           autoComplete="username"
           autoFocus
+          onBlur={validateUsername}
+          error={usernameValidation && usernameValidation.error}
+          helperText={usernameValidation && usernameValidation.error ? usernameValidation.error : ''}
         />
+
         <TextField
           margin="normal"
           required
@@ -65,12 +90,16 @@ export default function Login() {
           type="password"
           id="password"
           autoComplete="current-password"
+          onBlur={validatePassword}
+          error={passwordValidation && passwordValidation.error }
+          helperText={passwordValidation && passwordValidation.error ? passwordValidation.error : ''}
         />
         <Button
           type="submit"
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          disabled={usernameValidation || passwordValidation}
         >
           Sign In
         </Button>

@@ -1,6 +1,9 @@
 import * as React from 'react';
+import { useContext } from "react";
 import { NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { AuthContext } from "../../contexts/AuthContext";
+import { useState } from 'react';
 
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -71,19 +74,28 @@ const SidebarData = [
     {
         title: 'Home',
         path: '/',
-        icon: <AccessibilityNewIcon />
+        icon: <AccessibilityNewIcon />,
+        roles: ['cafe-owner', 'app-owner', 'cafe-waiter']
     },
     {
         title: 'Menu',
         path: '/menu',
-        icon: <AccessibilityNewIcon />
+        icon: <AccessibilityNewIcon />,
+        roles: ['cafe-owner']
+    },
+    {
+        title: 'Tenants',
+        path: '/tenants',
+        icon: <AccessibilityNewIcon />,
+        roles: ['app-owner']
     }
 ];
 
 export default function Navigation(props) {
+    const { roles } = useContext(AuthContext);
     const theme = useTheme();
     const { pathname } = useLocation();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -133,14 +145,15 @@ export default function Navigation(props) {
                 <Divider />
                 <List>
                     {SidebarData.map((item, index) => (
-                        <ListItem key={item.title} component={NavLink} to={item.path} disablePadding selected={pathname === item.path}>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {item.icon}
-                                </ListItemIcon>
-                                <ListItemText primary={item.title} />
-                            </ListItemButton>
-                        </ListItem>
+                        item.roles.some(role => roles.includes(role)) ?
+                            <ListItem key={item.title} component={NavLink} to={item.path} disablePadding selected={pathname === item.path}>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        {item.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={item.title} />
+                                </ListItemButton>
+                            </ListItem> : <></>
                     ))}
                 </List>
             </Drawer>

@@ -2,6 +2,12 @@ var express = require('express');
 var router = express.Router();
 const crypto = require("crypto");
 const keycloakAdmin = require("../config/keycloakAdmin");
+const keycloak = require('../config/keycloak-config').getKeycloak();
+
+
+router.get('/', keycloak.protect('app-owner'), async function (req, res) {
+    res.send({ success: 'User has access to tenants'});
+});
 
 router.post('/register', async function(req, res) {
     const { ownerUsername, ownerPassword, waiterUsername, waiterPassword } = req.body;

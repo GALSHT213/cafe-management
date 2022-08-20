@@ -1,12 +1,12 @@
 const request = async (method, url, data) => {
     try {
-        const user = localStorage.getItem('auth');
-        const auth = JSON.parse(user || '{}');
+        const accessToken = localStorage.getItem('auth');
+        
 
         let headers = {}
 
-        if (auth.accessToken) {
-            headers['Authorization'] = `Bearer ${auth.accessToken}`;
+        if (accessToken) {
+            headers['Authorization'] = `Bearer ${accessToken}`;
         }
 
         let buildRequest;

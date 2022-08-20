@@ -1,5 +1,9 @@
 var Keycloak = require('keycloak-connect');
 
+Keycloak.prototype.redirectToLogin = function(req) {
+    return false;
+}
+
 let _keycloak;
 
 const keycloakConfig = {
